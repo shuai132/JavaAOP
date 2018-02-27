@@ -3,6 +3,7 @@ package nodep.test;
 import util.time.Sleep;
 
 public class People implements PeopleInterface {
+
     @Override
     public void eat() {
         System.out.println("eating ...");

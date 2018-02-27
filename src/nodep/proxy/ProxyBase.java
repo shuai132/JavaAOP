@@ -1,27 +1,25 @@
 package nodep.proxy;
 
-import nodep.proxy.annotation.ProxyClass;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 
 
 public abstract class ProxyBase implements InvocationHandler{
+
     protected Object target;
 
     public void setTarget(Object target) {
         this.target = target;
     }
 
-    public Object newProxyInstance(Object origin) {
-        setTarget(origin);
-        return newProxyInstance(this);
+    @SuppressWarnings("unchecked")
+    public <T> T newProxyInstance(T target) {
+        setTarget(target);
+        return (T)newProxyInstance(this);
     }
 
     private Object newProxyInstance(InvocationHandler invocationHandler) {
-        ProxyClass proxyClass = invocationHandler.getClass().getAnnotation(ProxyClass.class);
-        Class<?> cls = proxyClass.value();
-        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), cls.getInterfaces(), invocationHandler);
+        return Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), target.getClass().getInterfaces(), invocationHandler);
     }
 
 }

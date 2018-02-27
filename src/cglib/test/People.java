@@ -1,7 +1,7 @@
 package cglib.test;
 
-import cglib.annotation.CountTime;
-import cglib.annotation.Safe;
+import cglib.proxy.annotation.CountTime;
+import cglib.proxy.annotation.Safe;
 import util.time.Sleep;
 
 public class People {
