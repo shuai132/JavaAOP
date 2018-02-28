@@ -3,6 +3,7 @@ package nodep.proxy;
 import nodep.proxy.annotation.CountTime;
 import nodep.proxy.annotation.Safe;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 public final class AopProxy extends ProxyBase {
@@ -11,8 +12,7 @@ public final class AopProxy extends ProxyBase {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         before();
         Object ret = null;
-
-        if(method.isAnnotationPresent(Safe.class)) {
+        if (isAnnotationPresent(method, Safe.class)) {
             // 安全方法（catch任何异常）
             try {
                 ret = method.invoke(target, args);
@@ -20,7 +20,7 @@ public final class AopProxy extends ProxyBase {
                 System.out.println("go wrong! but I'm fine~");
             }
         }
-        else if (method.isAnnotationPresent(CountTime.class)) {
+        else if (isAnnotationPresent(method, CountTime.class)) {
             // 需要计时的方法
             long start = System.currentTimeMillis();
             ret = method.invoke(target, args);
@@ -33,6 +33,11 @@ public final class AopProxy extends ProxyBase {
         }
         after();
         return ret;
+    }
+
+    // 判断被代理类target实现的method是否包含指定注解
+    private boolean isAnnotationPresent(Method method, Class<? extends Annotation> annotationClass) throws Throwable {
+        return target.getClass().getMethod(method.getName(), method.getParameterTypes()).isAnnotationPresent(annotationClass);
     }
 
     private void before() {
